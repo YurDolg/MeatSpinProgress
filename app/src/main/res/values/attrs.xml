@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MeatSpinProgressBar">
+        <attr name="meatType" format="enum">
+            <enum name="cycle" value="0" />
+            <enum name="horizontal" value="1" />
+        </attr>
+        <attr name="meatIsLoop" format="boolean" />
+        <attr name="meatMainColor" format="color" />
+        <attr name="meatSupportColor" format="color" />
+    </declare-styleable>
+</resources>
