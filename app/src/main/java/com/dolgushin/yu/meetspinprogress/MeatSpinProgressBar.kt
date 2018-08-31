@@ -1,6 +1,7 @@
 package com.dolgushin.yu.meetspinprogress
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
@@ -44,5 +45,12 @@ class MeatSpinProgressBar : View {
         secondaryPaint.style = Paint.Style.FILL
     }
 
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        drawCycleLoopProgress(canvas)
+    }
 
+    private fun drawCycleLoopProgress(canvas: Canvas) {
+
+    }
 }
