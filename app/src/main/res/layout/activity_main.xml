@@ -6,15 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.dolgushin.yu.meetspinprogress.MeatSpinProgressBar
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:meatOrientation="horizontal" />
 
     <com.dolgushin.yu.meetspinprogress.MeatSpinProgressBar
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:meatPrimaryColor="@color/colorPrimaryDark"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="50dp"
-        app:meatOrientation="cycle" />
+        app:meatPrimaryColor="@color/colorPrimaryDark" />
 </FrameLayout>
