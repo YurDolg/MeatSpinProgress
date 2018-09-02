@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
@@ -21,8 +20,11 @@ class MeatSpinProgressBar : View {
     private var ballRadius = 0f
     private var trunkRadius = 0f
     private var crownRadius = 0f
+    private lateinit var flyingMeats: FlyingMeats
+    private var horizontalAnimatorCounter = 0f
+
     private var currentTiltAngle = 0f
-    private var currentTrunkPosition = 0f
+
     private lateinit var cycleAnimator: ValueAnimator
     private lateinit var horizontalAnimator: ValueAnimator
 
@@ -70,6 +72,7 @@ class MeatSpinProgressBar : View {
 
         initCycleAnimator()
         initHorizontalAnimator()
+        flyingMeats = FlyingMeats()
     }
 
     fun initHorizontalAnimator() {
@@ -78,8 +81,7 @@ class MeatSpinProgressBar : View {
         horizontalAnimator.interpolator = LinearInterpolator()
         horizontalAnimator.repeatCount = ValueAnimator.INFINITE
         horizontalAnimator.addUpdateListener {
-            var current = it.animatedValue as Float
-            currentTrunkPosition = Math.min(100f, current) * 2
+            horizontalAnimatorCounter = it.animatedValue as Float
             invalidate()
         }
     }
@@ -102,6 +104,10 @@ class MeatSpinProgressBar : View {
         }
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if (orientation == MeatOrientation.CYCLE.orientation) drawCycleLoopProgress(canvas)
@@ -110,22 +116,23 @@ class MeatSpinProgressBar : View {
 
 
     private fun drawHorizontalLoopProgress(canvas: Canvas) {
-        ballRadius = (height - dpToPx(2f)) / 8
+
+        ballRadius = Math.min(height, width) / 8f
         trunkRadius = ballRadius / 1.5f
-        var rightPoint = 0f
-        var step = (width - dpToPx(1f) - dpToPx(1f)) / 100
-        if (currentTrunkPosition * step < dpToPx(1f) + ballRadius) rightPoint = dpToPx(1f) + ballRadius
-        else rightPoint = currentTrunkPosition * step
-        canvas.drawCircle(dpToPx(1f) + ballRadius, getCenterH() - ballRadius, ballRadius, primaryPaint)
-        canvas.drawCircle(dpToPx(1f) + ballRadius, getCenterH() + ballRadius, ballRadius, primaryPaint)
-        canvas.drawRoundRect(
-                dpToPx(1f) + ballRadius,
-                getCenterH() - trunkRadius,
-                rightPoint,
-                getCenterH() + trunkRadius,
-                trunkRadius,
-                trunkRadius,
-                primaryPaint)
+        crownRadius = trunkRadius + 2f
+        val step = width / 100f
+        flyingMeats.calculateMeats(width, height)
+        flyingMeats.updateMeatsPosition(step * horizontalAnimatorCounter)
+        for (meat in flyingMeats.meats) {
+            canvas.drawRoundRect(meat.trunk, flyingMeats.oneMeatSizeHeight, flyingMeats.oneMeatSizeHeight, primaryPaint)
+            canvas.drawCircle(meat.ballOneCenter.x, meat.ballOneCenter.y, meat.ballRadius, primaryPaint)
+            canvas.drawCircle(meat.ballTwoCenter.x, meat.ballTwoCenter.y, meat.ballRadius, primaryPaint)
+            canvas.drawRoundRect(meat.secondaryTrunk, flyingMeats.oneMeatSizeHeight, flyingMeats.oneMeatSizeHeight, primaryPaint)
+            canvas.drawCircle(meat.ballOneSecondaryCenter.x, meat.ballOneSecondaryCenter.y, meat.ballRadius, primaryPaint)
+            canvas.drawCircle(meat.ballTwoSecondaryCenter.x, meat.ballTwoSecondaryCenter.y, meat.ballRadius, primaryPaint)
+
+        }
+        val x = 0
     }
 
     private fun drawCycleLoopProgress(canvas: Canvas) {
@@ -138,13 +145,13 @@ class MeatSpinProgressBar : View {
         canvas.rotate(currentTiltAngle, getCenterW().toFloat(), getCenterH().toFloat())
         canvas.drawRoundRect(
                 getCenterW() - trunkRadius,
-                dpToPx(1f)+crownRadius,
+                dpToPx(1f) + crownRadius,
                 getCenterW() + trunkRadius,
                 getCenterH().toFloat(),
                 trunkRadius,
                 trunkRadius,
                 primaryPaint)
-        canvas.drawCircle(getCenterW().toFloat(), dpToPx(1f)+crownRadius, crownRadius, primaryPaint)
+        canvas.drawCircle(getCenterW().toFloat(), dpToPx(1f) + crownRadius, crownRadius, primaryPaint)
         canvas.restore()
     }
 
