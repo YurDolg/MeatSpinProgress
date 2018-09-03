@@ -5,21 +5,24 @@ import android.util.Log
 class FlyingMeats() {
     var calculate = false
     var meats = ArrayList<Meat>()
-
-    init {
-        meats = arrayListOf(Meat(), Meat(), Meat(), Meat(), Meat(), Meat(),Meat())
-    }
-
+    var betweenDistance = 0f
+    var quantity = 0
+        set(value) {
+            field = value
+            meats.clear()
+            for (i in 1..field) {
+                meats.add(Meat())
+            }
+            calculate = false
+        }
     private var oneMeatSizeWidth = 0f
     var oneMeatSizeHeight = 0f
     private var ballsRadius = 0f
-    var betweenDistance = 50f
-    var quantity = 7
     fun calculateMeats(viewWidth: Int, viewHeight: Int) {
         if (calculate) return
-        oneMeatSizeWidth = (viewWidth - (betweenDistance * (quantity - 1))) / quantity.toFloat()
+        oneMeatSizeWidth = viewWidth / quantity.toFloat()
         ballsRadius = Math.min(viewHeight, viewWidth) / 8f
-
+        var oneTrunkWidth = oneMeatSizeWidth - ballsRadius - betweenDistance
         oneMeatSizeHeight = ballsRadius / 1.5f
         for (i in 0 until meats.size) {
             meats[i].width = oneMeatSizeWidth
@@ -28,8 +31,8 @@ class FlyingMeats() {
             meats[i].viewHeight = viewHeight
             meats[i].ballRadius = ballsRadius
 
-            meats[i].trunk.left = ballsRadius + (oneMeatSizeWidth - ballsRadius + betweenDistance) * i
-            meats[i].trunk.right = meats[i].trunk.left + (oneMeatSizeWidth - ballsRadius)
+            meats[i].trunk.left = ballsRadius + oneMeatSizeWidth * i
+            meats[i].trunk.right = meats[i].trunk.left + oneTrunkWidth
             meats[i].trunk.top = viewHeight / 2 - oneMeatSizeHeight
             meats[i].trunk.bottom = viewHeight / 2 + oneMeatSizeHeight
             meats[i].ballOneCenter.x = meats[i].trunk.left
@@ -37,7 +40,7 @@ class FlyingMeats() {
             meats[i].ballTwoCenter.x = meats[i].trunk.left
             meats[i].ballTwoCenter.y = viewHeight / 2 - ballsRadius
 
-            meats[i].originEndPosition = meats[i].trunk.left + (oneMeatSizeWidth - ballsRadius)
+            meats[i].originEndPosition = meats[i].trunk.right
             meats[i].originStartPosition = meats[i].trunk.left
         }
         calculate = true
@@ -45,11 +48,12 @@ class FlyingMeats() {
 
     fun updateMeatsPosition(delta: Float) {
         for (i in 0 until meats.size) {
-            meats[i].trunk.left = ballsRadius + (oneMeatSizeWidth - ballsRadius + betweenDistance) * i + delta
-            meats[i].trunk.right = meats[i].trunk.left + (oneMeatSizeWidth - ballsRadius)
+            var oneTrunkWidth = oneMeatSizeWidth - ballsRadius - betweenDistance
+            meats[i].trunk.left = ballsRadius + oneMeatSizeWidth * i+ delta
+            meats[i].trunk.right = meats[i].trunk.left +oneTrunkWidth
             meats[i].ballOneCenter.x = meats[i].trunk.left
             meats[i].ballTwoCenter.x = meats[i].trunk.left
-            meats[i].updatePositions(delta-betweenDistance)
+            meats[i].updatePositions(delta)
         }
 
     }

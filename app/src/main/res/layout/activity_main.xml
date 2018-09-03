@@ -8,10 +8,16 @@
 
 
     <com.dolgushin.yu.meetspinprogress.MeatSpinProgressBar
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_width="400dp"
+        android:layout_height="20dp"
         app:meatOrientation="horizontal"
-        android:layout_marginTop="50dp"
-        app:meatSecondatyColor="@color/colorAccent"
-        app:meatPrimaryColor="@color/colorPrimaryDark" />
+        app:meatPrimaryColor="@color/colorPrimaryDark"
+        app:meatSecondatyColor="@color/colorAccent" />
+
+    <com.dolgushin.yu.meetspinprogress.MeatSpinProgressBar
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        app:meatPrimaryColor="@color/colorPrimaryDark"
+        app:meatSecondatyColor="@color/colorAccent" />
 </FrameLayout>

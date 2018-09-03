@@ -11,6 +11,8 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 
 class MeatSpinProgressBar : View {
+    private var quantityHorizontalMeats = 0
+    private var horizontalDistance = 0f
     private var orientation = 0
     private var primaryColor = 0
     private var secondaryColor = 0
@@ -33,6 +35,8 @@ class MeatSpinProgressBar : View {
         primaryColor = Color.RED
         secondaryColor = Color.GRAY
         isLoop = true
+        quantityHorizontalMeats = MeatQuantity.FOUR.quantity
+        horizontalDistance = MeatDistance.SMALL.distance
         initializeMeatSpinProgressBar()
     }
 
@@ -42,6 +46,8 @@ class MeatSpinProgressBar : View {
         primaryColor = typedArray.getColor(R.styleable.MeatSpinProgressBar_meatPrimaryColor, Color.RED)
         secondaryColor = typedArray.getColor(R.styleable.MeatSpinProgressBar_meatSecondatyColor, Color.GRAY)
         isLoop = typedArray.getBoolean(R.styleable.MeatSpinProgressBar_meatIsLoop, true)
+        quantityHorizontalMeats = typedArray.getInt(R.styleable.MeatSpinProgressBar_meatHorizontalQuantity, MeatQuantity.FOUR.quantity)
+        horizontalDistance = typedArray.getFloat(R.styleable.MeatSpinProgressBar_meatHorizontalDistance, MeatDistance.SMALL.distance)
         typedArray.recycle()
         initializeMeatSpinProgressBar()
     }
@@ -73,6 +79,8 @@ class MeatSpinProgressBar : View {
         initCycleAnimator()
         initHorizontalAnimator()
         flyingMeats = FlyingMeats()
+        flyingMeats.quantity = quantityHorizontalMeats
+        flyingMeats.betweenDistance = horizontalDistance
     }
 
     fun initHorizontalAnimator() {
@@ -104,9 +112,6 @@ class MeatSpinProgressBar : View {
         }
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-    }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)

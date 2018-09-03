@@ -6,6 +6,16 @@
             <enum name="horizontal" value="1" />
         </attr>
         <attr name="meatIsLoop" format="boolean" />
+        <attr name="meatHorizontalQuantity" format="enum">
+            <enum name="two" value="2" />
+            <enum name="four" value="4" />
+            <enum name="eight " value="8" />
+        </attr>
+        <attr name="meatHorizontalDistance" format="enum">
+            <enum name="small" value="20f" />
+            <enum name="medium" value="40f" />
+            <enum name="large " value="80f" />
+        </attr>
         <attr name="meatSecondatyColor" format="color" />
         <attr name="meatPrimaryColor" format="color" />
     </declare-styleable>
