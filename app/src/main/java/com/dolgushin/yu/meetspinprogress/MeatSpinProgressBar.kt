@@ -24,7 +24,7 @@ class MeatSpinProgressBar : View {
     private var crownRadius = 0f
     private lateinit var flyingMeats: FlyingMeats
     private var horizontalAnimatorCounter = 0f
-
+    private var isGayColors = false
     private var currentTiltAngle = 0f
 
     private lateinit var cycleAnimator: ValueAnimator
@@ -37,6 +37,7 @@ class MeatSpinProgressBar : View {
         isLoop = true
         quantityHorizontalMeats = MeatQuantity.FOUR.quantity
         horizontalDistance = MeatDistance.SMALL.distance
+        isGayColors = false
         initializeMeatSpinProgressBar()
     }
 
@@ -48,6 +49,7 @@ class MeatSpinProgressBar : View {
         isLoop = typedArray.getBoolean(R.styleable.MeatSpinProgressBar_meatIsLoop, true)
         quantityHorizontalMeats = typedArray.getInt(R.styleable.MeatSpinProgressBar_meatHorizontalQuantity, MeatQuantity.FOUR.quantity)
         horizontalDistance = typedArray.getFloat(R.styleable.MeatSpinProgressBar_meatHorizontalDistance, MeatDistance.SMALL.distance)
+        isGayColors = typedArray.getBoolean(R.styleable.MeatSpinProgressBar_meatGayColors, false)
         typedArray.recycle()
         initializeMeatSpinProgressBar()
     }
@@ -129,15 +131,15 @@ class MeatSpinProgressBar : View {
         flyingMeats.calculateMeats(width, height)
         flyingMeats.updateMeatsPosition(step * horizontalAnimatorCounter)
         for (meat in flyingMeats.meats) {
+            if (isGayColors) primaryPaint.color = meat.color
             canvas.drawRoundRect(meat.trunk, flyingMeats.oneMeatSizeHeight, flyingMeats.oneMeatSizeHeight, primaryPaint)
             canvas.drawCircle(meat.ballOneCenter.x, meat.ballOneCenter.y, meat.ballRadius, primaryPaint)
             canvas.drawCircle(meat.ballTwoCenter.x, meat.ballTwoCenter.y, meat.ballRadius, primaryPaint)
             canvas.drawRoundRect(meat.secondaryTrunk, flyingMeats.oneMeatSizeHeight, flyingMeats.oneMeatSizeHeight, primaryPaint)
             canvas.drawCircle(meat.ballOneSecondaryCenter.x, meat.ballOneSecondaryCenter.y, meat.ballRadius, primaryPaint)
             canvas.drawCircle(meat.ballTwoSecondaryCenter.x, meat.ballTwoSecondaryCenter.y, meat.ballRadius, primaryPaint)
-
         }
-        val x = 0
+        primaryPaint.color = primaryColor
     }
 
     private fun drawCycleLoopProgress(canvas: Canvas) {

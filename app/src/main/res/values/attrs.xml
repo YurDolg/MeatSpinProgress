@@ -9,12 +9,13 @@
         <attr name="meatHorizontalQuantity" format="enum">
             <enum name="two" value="2" />
             <enum name="four" value="4" />
-            <enum name="eight " value="8" />
+            <enum name="eight" value="8" />
         </attr>
+        <attr name="meatGayColors" format="boolean"/>
         <attr name="meatHorizontalDistance" format="enum">
-            <enum name="small" value="20f" />
-            <enum name="medium" value="40f" />
-            <enum name="large " value="80f" />
+            <enum name="small" value="20" />
+            <enum name="medium" value="40" />
+            <enum name="large " value="80" />
         </attr>
         <attr name="meatSecondatyColor" format="color" />
         <attr name="meatPrimaryColor" format="color" />

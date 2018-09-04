@@ -4,6 +4,7 @@ import android.graphics.PointF
 import android.graphics.RectF
 
 class Meat() {
+    var color = 0
     var viewWidth = 0
     var viewHeight = 0
     var originStartPosition = 0f

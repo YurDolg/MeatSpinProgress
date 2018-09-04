@@ -11,6 +11,8 @@
         android:layout_width="400dp"
         android:layout_height="20dp"
         app:meatOrientation="horizontal"
+        app:meatHorizontalQuantity="eight"
+        app:meatGayColors="true"
         app:meatPrimaryColor="@color/colorPrimaryDark"
         app:meatSecondatyColor="@color/colorAccent" />
 

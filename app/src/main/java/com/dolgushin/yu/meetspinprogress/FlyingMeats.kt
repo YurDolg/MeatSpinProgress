@@ -3,9 +3,14 @@ package com.dolgushin.yu.meetspinprogress
 import android.util.Log
 
 class FlyingMeats() {
+    private val gayColors = ColorsManager()
     var calculate = false
     var meats = ArrayList<Meat>()
     var betweenDistance = 0f
+        set(value) {
+            field = value
+            calculate = false
+        }
     var quantity = 0
         set(value) {
             field = value
@@ -30,7 +35,7 @@ class FlyingMeats() {
             meats[i].viewWidth = viewWidth
             meats[i].viewHeight = viewHeight
             meats[i].ballRadius = ballsRadius
-
+            meats[i].color = gayColors.getColor()
             meats[i].trunk.left = ballsRadius + oneMeatSizeWidth * i
             meats[i].trunk.right = meats[i].trunk.left + oneTrunkWidth
             meats[i].trunk.top = viewHeight / 2 - oneMeatSizeHeight
@@ -43,14 +48,15 @@ class FlyingMeats() {
             meats[i].originEndPosition = meats[i].trunk.right
             meats[i].originStartPosition = meats[i].trunk.left
         }
+        gayColors.reset()
         calculate = true
     }
 
     fun updateMeatsPosition(delta: Float) {
         for (i in 0 until meats.size) {
             var oneTrunkWidth = oneMeatSizeWidth - ballsRadius - betweenDistance
-            meats[i].trunk.left = ballsRadius + oneMeatSizeWidth * i+ delta
-            meats[i].trunk.right = meats[i].trunk.left +oneTrunkWidth
+            meats[i].trunk.left = ballsRadius + oneMeatSizeWidth * i + delta
+            meats[i].trunk.right = meats[i].trunk.left + oneTrunkWidth
             meats[i].ballOneCenter.x = meats[i].trunk.left
             meats[i].ballTwoCenter.x = meats[i].trunk.left
             meats[i].updatePositions(delta)
