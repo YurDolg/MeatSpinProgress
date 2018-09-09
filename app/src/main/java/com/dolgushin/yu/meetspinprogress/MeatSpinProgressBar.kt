@@ -7,6 +7,8 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AnticipateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import com.dolgushin.yu.meetspinprogress.enums.HorizontalMeatDistance
@@ -37,6 +39,7 @@ class MeatSpinProgressBar : View {
 
     //Sup object for loop horizontal progress
     private lateinit var flyingHorizontalMeats: FlyingHorizontalMeats
+    private lateinit var gradientManager: GradientManager
 
     //Animators for loop progress
     private lateinit var cycleAnimator: ValueAnimator
@@ -85,6 +88,8 @@ class MeatSpinProgressBar : View {
         flyingHorizontalMeats = FlyingHorizontalMeats()
         flyingHorizontalMeats.quantity = quantityHorizontalMeats
         flyingHorizontalMeats.betweenDistance = horizontalDistance
+        gradientManager = GradientManager()
+        gradientManager.calculateGradients()
     }
 
     override fun onAttachedToWindow() {
@@ -166,6 +171,9 @@ class MeatSpinProgressBar : View {
         ballRadius = (Math.min(width, height) - dpToPx(2f)) / 8
         trunkRadius = ballRadius / 1.5f
         crownRadius = trunkRadius + 2f
+        if (isGayColors) {
+            primaryPaint.color = gradientManager.getColor(currentTiltAngle)
+        }
         canvas.drawCircle(getCenterW() - ballRadius, getCenterH().toFloat(), ballRadius, primaryPaint)
         canvas.drawCircle(getCenterW() + ballRadius, getCenterH().toFloat(), ballRadius, primaryPaint)
         canvas.save()
@@ -180,6 +188,7 @@ class MeatSpinProgressBar : View {
                 primaryPaint)
         canvas.drawCircle(getCenterW().toFloat(), dpToPx(1f) + crownRadius, crownRadius, primaryPaint)
         canvas.restore()
+        primaryPaint.color = primaryColor
     }
 
 }
