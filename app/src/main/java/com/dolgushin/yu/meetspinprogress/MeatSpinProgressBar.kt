@@ -9,34 +9,50 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
+import com.dolgushin.yu.meetspinprogress.enums.HorizontalMeatDistance
+import com.dolgushin.yu.meetspinprogress.enums.MeatOrientation
+import com.dolgushin.yu.meetspinprogress.enums.HorizontalMeatQuantity
 
 class MeatSpinProgressBar : View {
+
+    //Horizontal loop property
     private var quantityHorizontalMeats = 0
     private var horizontalDistance = 0f
+
+    //Property
     private var orientation = 0
     private var primaryColor = 0
     private var secondaryColor = 0
     private var isLoop = true
+    private var isGayColors = false
+
+    //Paints
     private var primaryPaint = Paint()
     private var secondaryPaint = Paint()
+
+    //Cycle loop progress property
     private var ballRadius = 0f
     private var trunkRadius = 0f
     private var crownRadius = 0f
-    private lateinit var flyingMeats: FlyingMeats
-    private var horizontalAnimatorCounter = 0f
-    private var isGayColors = false
-    private var currentTiltAngle = 0f
 
+    //Sup object for loop horizontal progress
+    private lateinit var flyingHorizontalMeats: FlyingHorizontalMeats
+
+    //Animators for loop progress
     private lateinit var cycleAnimator: ValueAnimator
     private lateinit var horizontalAnimator: ValueAnimator
+
+    //Animators counters
+    private var horizontalAnimatorCounter = 0f
+    private var currentTiltAngle = 0f
 
     constructor(context: Context) : super(context) {
         orientation = MeatOrientation.CYCLE.orientation
         primaryColor = Color.RED
         secondaryColor = Color.GRAY
         isLoop = true
-        quantityHorizontalMeats = MeatQuantity.FOUR.quantity
-        horizontalDistance = MeatDistance.SMALL.distance
+        quantityHorizontalMeats = HorizontalMeatQuantity.FOUR.quantity
+        horizontalDistance = HorizontalMeatDistance.SMALL.distance
         isGayColors = false
         initializeMeatSpinProgressBar()
     }
@@ -47,11 +63,28 @@ class MeatSpinProgressBar : View {
         primaryColor = typedArray.getColor(R.styleable.MeatSpinProgressBar_meatPrimaryColor, Color.RED)
         secondaryColor = typedArray.getColor(R.styleable.MeatSpinProgressBar_meatSecondatyColor, Color.GRAY)
         isLoop = typedArray.getBoolean(R.styleable.MeatSpinProgressBar_meatIsLoop, true)
-        quantityHorizontalMeats = typedArray.getInt(R.styleable.MeatSpinProgressBar_meatHorizontalQuantity, MeatQuantity.FOUR.quantity)
-        horizontalDistance = typedArray.getFloat(R.styleable.MeatSpinProgressBar_meatHorizontalDistance, MeatDistance.SMALL.distance)
+        quantityHorizontalMeats = typedArray.getInt(R.styleable.MeatSpinProgressBar_meatHorizontalQuantity, HorizontalMeatQuantity.FOUR.quantity)
+        horizontalDistance = typedArray.getFloat(R.styleable.MeatSpinProgressBar_meatHorizontalDistance, HorizontalMeatDistance.SMALL.distance)
         isGayColors = typedArray.getBoolean(R.styleable.MeatSpinProgressBar_meatGayColors, false)
         typedArray.recycle()
         initializeMeatSpinProgressBar()
+    }
+
+    //Main init method
+    private fun initializeMeatSpinProgressBar() {
+        primaryPaint.isAntiAlias = true
+        primaryPaint.color = primaryColor
+        primaryPaint.style = Paint.Style.FILL
+
+        secondaryPaint.isAntiAlias = true
+        secondaryPaint.color = secondaryColor
+        secondaryPaint.style = Paint.Style.FILL
+
+        initCycleAnimator()
+        initHorizontalAnimator()
+        flyingHorizontalMeats = FlyingHorizontalMeats()
+        flyingHorizontalMeats.quantity = quantityHorizontalMeats
+        flyingHorizontalMeats.betweenDistance = horizontalDistance
     }
 
     override fun onAttachedToWindow() {
@@ -64,25 +97,19 @@ class MeatSpinProgressBar : View {
         stopAnimationProgress()
     }
 
+    // Start anim if property isLoop equals true
+    private fun startAnimationProgress() {
+        if (isLoop) {
+            if (orientation == MeatOrientation.CYCLE.orientation) cycleAnimator.start()
+            else horizontalAnimator.start()
+        }
+    }
+
+
+    //Stop anim if it running
     private fun stopAnimationProgress() {
         if (cycleAnimator.isRunning) cycleAnimator.cancel()
         if (horizontalAnimator.isRunning) horizontalAnimator.cancel()
-    }
-
-    private fun initializeMeatSpinProgressBar() {
-        primaryPaint.isAntiAlias = true
-        primaryPaint.color = primaryColor
-        primaryPaint.style = Paint.Style.FILL
-
-        secondaryPaint.isAntiAlias = true
-        secondaryPaint.color = secondaryColor
-        secondaryPaint.style = Paint.Style.FILL
-
-        initCycleAnimator()
-        initHorizontalAnimator()
-        flyingMeats = FlyingMeats()
-        flyingMeats.quantity = quantityHorizontalMeats
-        flyingMeats.betweenDistance = horizontalDistance
     }
 
     fun initHorizontalAnimator() {
@@ -107,13 +134,6 @@ class MeatSpinProgressBar : View {
         }
     }
 
-    private fun startAnimationProgress() {
-        if (isLoop) {
-            if (orientation == MeatOrientation.CYCLE.orientation) cycleAnimator.start()
-            else horizontalAnimator.start()
-        }
-    }
-
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -128,14 +148,14 @@ class MeatSpinProgressBar : View {
         trunkRadius = ballRadius / 1.5f
         crownRadius = trunkRadius + 2f
         val step = width / 100f
-        flyingMeats.calculateMeats(width, height)
-        flyingMeats.updateMeatsPosition(step * horizontalAnimatorCounter)
-        for (meat in flyingMeats.meats) {
+        flyingHorizontalMeats.calculateMeats(width, height)
+        flyingHorizontalMeats.updateMeatsPosition(step * horizontalAnimatorCounter)
+        for (meat in flyingHorizontalMeats.meats) {
             if (isGayColors) primaryPaint.color = meat.color
-            canvas.drawRoundRect(meat.trunk, flyingMeats.oneMeatSizeHeight, flyingMeats.oneMeatSizeHeight, primaryPaint)
+            canvas.drawRoundRect(meat.trunk, flyingHorizontalMeats.oneMeatSizeHeight, flyingHorizontalMeats.oneMeatSizeHeight, primaryPaint)
             canvas.drawCircle(meat.ballOneCenter.x, meat.ballOneCenter.y, meat.ballRadius, primaryPaint)
             canvas.drawCircle(meat.ballTwoCenter.x, meat.ballTwoCenter.y, meat.ballRadius, primaryPaint)
-            canvas.drawRoundRect(meat.secondaryTrunk, flyingMeats.oneMeatSizeHeight, flyingMeats.oneMeatSizeHeight, primaryPaint)
+            canvas.drawRoundRect(meat.secondaryTrunk, flyingHorizontalMeats.oneMeatSizeHeight, flyingHorizontalMeats.oneMeatSizeHeight, primaryPaint)
             canvas.drawCircle(meat.ballOneSecondaryCenter.x, meat.ballOneSecondaryCenter.y, meat.ballRadius, primaryPaint)
             canvas.drawCircle(meat.ballTwoSecondaryCenter.x, meat.ballTwoSecondaryCenter.y, meat.ballRadius, primaryPaint)
         }

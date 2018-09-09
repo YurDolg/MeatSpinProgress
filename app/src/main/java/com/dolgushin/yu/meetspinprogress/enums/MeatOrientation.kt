@@ -1,4 +1,4 @@
-package com.dolgushin.yu.meetspinprogress
+package com.dolgushin.yu.meetspinprogress.enums
 
 enum class MeatOrientation(val orientation: Int) {
     CYCLE(0),

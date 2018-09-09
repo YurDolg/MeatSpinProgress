@@ -2,7 +2,7 @@ package com.dolgushin.yu.meetspinprogress
 
 import android.util.Log
 
-class FlyingMeats() {
+class FlyingHorizontalMeats() {
     private val gayColors = ColorsManager()
     var calculate = false
     var meats = ArrayList<Meat>()
